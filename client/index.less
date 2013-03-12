@@ -1,0 +1,37 @@
+@header-height: 32px;
+
+html {
+  height:100%;
+  width: 100%;
+}
+body {
+  height:100%;
+  width:100%;
+  font-family:Tahoma;
+  font-size:14px;
+}
+textarea{
+  resize:none;
+}
+.leftHolder{
+  h2{
+    text-align:center;
+  }
+}
+.img-rounded{
+  height: @header-height; 
+  margin-top:4px;
+}
+.messageDiv{
+  overflow-y:scroll;
+  overflow-x:hidden;
+  word-wrap:normal;
+  border:1px solid black;
+  p{
+    padding-left:5px;
+    padding-top:2px;
+  }
+}
+.currentRoom{
+  background-color:#eee;
+}
