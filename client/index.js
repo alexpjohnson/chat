@@ -61,7 +61,11 @@ Template.rooms.events = {
   "click #addRoom": function(){
     var roomName = window.prompt("Name The Room", "My Room") || "Anonymous Room";
     if (roomName){
-      Rooms.insert({"roomName": roomName});
+      if(Rooms.find({roomName: roomName}).count() === 0){
+        Rooms.insert({"roomName": roomName});
+      } else {
+        window.alert("There is already a room with that name. Please try again.");
+      }
     }
   }
 };
