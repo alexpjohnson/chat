@@ -6,5 +6,5 @@ Meteor.publish("messages", function(){
 });
 
 Meteor.publish("rooms", function(){
-  return Rooms.find({});
+  return Rooms.find({}, {sort:{roomName: 1}});
 });

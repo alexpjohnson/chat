@@ -40,8 +40,8 @@
 <template name="roomItem">
   <tr class="roomItem">
     <td class="span8">{{roomName}}</td>
-    <td class="span2"><button id="enter" class="btn">Enter</button><td>
-    <td class="span2"><button id="delete" class="btn btn-danger">Delete</button></td>
+    <td class="span2"><button id="enter" class="btn enter">Enter</button><td>
+    <td class="span2"><button id="delete" class="btn btn-danger delete">Delete</button></td>
   </tr>
 </template>
 
@@ -61,6 +61,7 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="container">
+        <a class="brand">NIC-CHAT     {{currentRoom}}</a>
         <div class="nav pull-right">
           {{> user_info}}
         </div>

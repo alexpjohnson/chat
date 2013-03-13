@@ -7,6 +7,10 @@ Rooms = new Meteor.Collection("rooms");
 Meteor.autorun(function(){
   Meteor.subscribe("messages");
   Meteor.subscribe("rooms");
+  var firstRoom = Rooms.find({}, {sort: {roomName: 1}}).fetch()[0];
+  if (firstRoom){
+    Session.setDefault("room", firstRoom._id);
+  }
 });
 
 /*
@@ -62,7 +66,7 @@ Template.rooms.events = {
     var roomName = window.prompt("Name The Room", "My Room") || "Anonymous Room";
     if (roomName){
       if(Rooms.find({roomName: roomName}).count() === 0){
-        Rooms.insert({"roomName": roomName});
+        Rooms.insert({roomName: roomName});
       } else {
         window.alert("There is already a room with that name. Please try again.");
       }
@@ -70,12 +74,30 @@ Template.rooms.events = {
   }
 };
 
-Template.main.currentRoom = function(){
-  return Session.get("room") || false;
+Template.header.currentRoom = function(){
+  var curRoom = Rooms.find({_id: Session.get("room")}).fetch()[0];
+  if (curRoom){
+    return curRoom.roomName;
+  }
+  return "Anonymous";
 };
 
 Template.rooms.availableRooms = function(){
-  return Rooms.find({});
+  return Rooms.find({}, {sort:{roomName: 1}});
+};
+
+Template.rooms.rendered = function(){
+  if (Rooms.find({}).count() === 1 ){
+    $('.delete').css('display', 'none');
+  } else{
+    $('.delete').css('display', 'inline');
+  }
+};
+
+Template.roomItem.rendered = function(){
+  if (this.data._id === Session.get("room")){
+    $(this.firstNode).addClass('currentRoom');
+  }
 };
 
 Template.roomItem.events = {
