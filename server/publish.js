@@ -8,3 +8,9 @@ Meteor.publish("messages", function(){
 Meteor.publish("rooms", function(){
   return Rooms.find({}, {sort:{roomName: 1}});
 });
+
+Meteor.startup(function(){
+  if (Rooms.find().count() === 0){
+    Rooms.insert({roomName: "Default Room", createdBy: "Server"});
+  }
+});

@@ -7,9 +7,20 @@ Rooms = new Meteor.Collection("rooms");
 Meteor.autorun(function(){
   Meteor.subscribe("messages");
   Meteor.subscribe("rooms");
-  var firstRoom = Rooms.find({}, {sort: {roomName: 1}}).fetch()[0];
-  if (firstRoom){
-    Session.setDefault("room", firstRoom._id);
+  var defaultRoom = Rooms.findOne({roomName: "Default Room"});
+  if (defaultRoom){
+    Session.setDefault("room", defaultRoom._id);
+  }
+  if (Meteor.user()){
+    Session.set("user", Meteor.user()._id);
+  }
+});
+
+Meteor.startup(function(){
+  if (Meteor.user()){
+    Session.set("user", Meteor.user()._id);
+  } else {
+    Session.set("user", "Anonymous");
   }
 });
 
@@ -40,7 +51,7 @@ Template.user_loggedout.events({
       if (err){
         //error handling
       }else {
-        //show err
+        Session.set("user", Meteor.user()._id);
     }
     });
   }
@@ -52,7 +63,7 @@ Template.user_loggedin.events({
       if (err){
         //err handling
       } else {
-        //show err
+        Session.set("user", "Anonymous");
       }
     });
   }
@@ -64,13 +75,14 @@ Template.user_loggedin.events({
 Template.rooms.events = {
   "click #addRoom": function(){
     var roomName = window.prompt("Name The Room", "My Room") || "Anonymous Room";
-    if (roomName){
-      if(Rooms.find({roomName: roomName}).count() === 0){
-        Rooms.insert({roomName: roomName});
+    if (roomName !== "Anonymous Room"){
+      if (Rooms.find({roomName: roomName}).count() === 0){
+        Rooms.insert({roomName: roomName, createdBy: Session.get("user")});
       } else {
         window.alert("There is already a room with that name. Please try again.");
       }
     }
+    window.close();
   }
 };
 
@@ -107,7 +119,11 @@ Template.roomItem.events = {
     $('.roomItem:contains(\''+this.roomName+'\')').first().addClass("currentRoom");
   },
   "click #delete": function(){
-    Rooms.remove({_id: this._id});
+    if (this.createdBy === Session.get("user")){
+      Rooms.remove({_id: this._id});
+    } else {
+      window.alert("You may only delete rooms that you created");
+    }
   }
 };
 
