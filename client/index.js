@@ -101,14 +101,17 @@ Template.rooms.availableRooms = function(){
 Template.rooms.rendered = function(){
   if (Rooms.find({}).count() === 1 ){
     $('.delete').css('display', 'none');
-  } else{
-    $('.delete').css('display', 'inline');
   }
 };
 
 Template.roomItem.rendered = function(){
-  if (this.data._id === Session.get("room")){
+  if (Session.equals("room", this.data._id)){
     $(this.firstNode).addClass('currentRoom');
+  }
+  if (!Session.equals("user", this.data.createdBy)){
+    $(this.firstNode.children).children(".delete").css('display', 'none');
+  } else {
+    $(this.firstNode.children).children(".delete").css('display', 'inline');
   }
 };
 
@@ -119,7 +122,7 @@ Template.roomItem.events = {
     $('.roomItem:contains(\''+this.roomName+'\')').first().addClass("currentRoom");
   },
   "click #delete": function(){
-    if (this.createdBy === Session.get("user")){
+    if (Session.equals("user", this.createdBy)){
       Rooms.remove({_id: this._id});
     } else {
       window.alert("You may only delete rooms that you created");
