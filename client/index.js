@@ -52,6 +52,7 @@ Template.user_loggedout.events({
         //error handling
       }else {
         Session.set("user", Meteor.user()._id);
+        location.reload();
     }
     });
   }
@@ -64,6 +65,7 @@ Template.user_loggedin.events({
         //err handling
       } else {
         Session.set("user", "Anonymous");
+        location.reload();
       }
     });
   }
